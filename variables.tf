@@ -44,5 +44,11 @@ variable "db_password" {
 variable "db_name" {
   description = "RDS database name"
   type        = string
-  default     = "techchallenge"
+  default     = "togglemaster"
+}
+
+variable "allowed_ssh_ip" {
+  description = "IP address allowed to SSH into EC2 (CIDR format, e.g., 203.0.113.0/32)"
+  type        = string
+  default     = "0.0.0.0/0"  # Change this to your specific IP for security
 }

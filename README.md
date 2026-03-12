@@ -8,11 +8,11 @@ This Terraform configuration creates AWS infrastructure for Tech Challenge 1 FIA
 - **Subnets**: 
   - 1 Public subnet (10.0.1.0/24) for EC2
   - 2 Private subnets (10.0.2.0/24, 10.0.3.0/24) for RDS
-- **EC2**: t3.micro instance with Python and pip pre-installed
-- **RDS**: MariaDB instance (db.t3.micro, free tier eligible)
+- **EC2**: t3.micro instance with Python, pip, Docker, and Docker Compose pre-installed
+- **RDS**: PostgreSQL 13 instance (db.t3.micro, free tier eligible)
 - **Security**: 
-  - EC2 accessible via SSH (port 22) and application port (5000)
-  - RDS accessible only from EC2 on port 3306
+  - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)
+  - RDS accessible only from EC2 security group on port 5432
 
 ## Prerequisites
 
@@ -31,7 +31,27 @@ aws ec2 create-key-pair \
 chmod 400 ~/.ssh/keypair-techchallenge1-fiap.pem
 ```
 
-## Usage
+## 🚀 CI/CD with GitHub Actions (Recommended)
+
+This repository includes a complete GitHub Actions workflow for automated Terraform deployments.
+
+**Quick Setup:**
+- See [QUICKSTART.md](QUICKSTART.md) for 5-minute setup
+- See [GITHUB_SETUP.md](GITHUB_SETUP.md) for detailed documentation
+
+**What you need:**
+1. AWS Access Key ID and Secret Access Key
+2. Configure GitHub Secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
+3. Create AWS Key Pair (`keypair-techchallenge1-fiap`)
+4. Create S3 bucket for Terraform state (optional but recommended)
+
+**How it works:**
+- **Pull Requests**: Runs `terraform plan` and comments the plan on PR
+- **Merge to Main**: Automatically runs `terraform apply` to deploy infrastructure
+
+This is the **recommended approach** for team collaboration and production deployments.
+
+## 💻 Manual Deployment (Alternative)
 
 ### Initialize Terraform
 
@@ -72,21 +92,45 @@ ssh -i ~/.ssh/keypair-techchallenge1-fiap.pem ec2-user@<EC2_PUBLIC_IP>
 Once connected to EC2:
 
 ```bash
-mysql -h <RDS_ENDPOINT> -u admin -p
+psql -h <RDS_ENDPOINT> -U admin -d togglemaster
 # Password: fiaptech34233@
 ```
 
 Or using Python:
 
 ```python
-import pymysql
+import psycopg2
 
-connection = pymysql.connect(
+connection = psycopg2.connect(
     host='<RDS_ENDPOINT>',
     user='admin',
     password='fiaptech34233@',
-    database='techchallenge'
+    database='togglemaster',
+    port=5432
 )
+```
+
+### Using Docker Compose with RDS
+
+If you want to use the RDS PostgreSQL instance with your Docker Compose application:
+
+1. Update your `docker-compose.yaml` environment variables:
+
+```yaml
+environment:
+  - DB_HOST=<RDS_ENDPOINT>  # Replace with actual RDS endpoint
+  - DB_NAME=togglemaster
+  - DB_USER=admin
+  - DB_PASSWORD=fiaptech34233@
+  - DB_PORT=5432
+```
+
+2. Comment out or remove the local `db` service from docker-compose.yaml since you're using RDS
+
+3. Deploy your application:
+
+```bash
+docker-compose up -d
 ```
 
 ## Destroy Infrastructure
@@ -107,20 +151,35 @@ You can customize variables in `variables.tf` or create a `terraform.tfvars` fil
 aws_region         = "us-east-1"
 project_name       = "techchallenge1-fiap"
 ec2_instance_type  = "t3.micro"
+allowed_ssh_ip     = "203.0.113.0/32"  # Replace with your IP address
+```
+
+### Get Your Current IP
+
+To restrict SSH to your current IP:
+
+```bash
+# Get your public IP
+curl -s https://checkip.amazonaws.com
+
+# Create terraform.tfvars with your IP
+echo 'allowed_ssh_ip = "YOUR_IP/32"' > terraform.tfvars
 ```
 
 ## Security Notes
 
 ⚠️ **Important**: 
-- The RDS password is stored in plain text in `variables.tf`. For production, use AWS Secrets Manager or Terraform variables.
-- SSH access (port 22) is open to 0.0.0.0/0. Consider restricting to your IP for better security.
-- Port 5000 is open to 0.0.0.0/0 as requested. Consider using a load balancer with SSL for production.
+- The RDS password is stored in plain text in `variables.tf`. For production, use AWS Secrets Manager or environment variables.
+- **SSH access**: By default set to 0.0.0.0/0. Strongly recommended to change `allowed_ssh_ip` variable to your specific IP address.
+- **HTTP/HTTPS ports** (80, 443) are open to 0.0.0.0/0 for web access.
+- **Port 5000** is open to 0.0.0.0/0 for application access.
+- **RDS** is in private subnet and only accessible from EC2 security group (best practice).
 
 ## Costs
 
 This infrastructure uses:
 - 1x t3.micro EC2 instance (free tier eligible)
-- 1x db.t3.micro RDS MariaDB (free tier eligible for first 750 hours/month)
+- 1x db.t3.micro RDS PostgreSQL (free tier eligible for first 750 hours/month)
 - Standard networking and storage costs apply
 
 Always monitor your AWS costs and destroy resources when not needed.

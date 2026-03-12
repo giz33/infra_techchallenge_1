@@ -31,7 +31,27 @@ aws ec2 create-key-pair \
 chmod 400 ~/.ssh/keypair-techchallenge1-fiap.pem
 ```
 
-## Usage
+## 🚀 CI/CD with GitHub Actions (Recommended)
+
+This repository includes a complete GitHub Actions workflow for automated Terraform deployments.
+
+**Quick Setup:**
+- See [QUICKSTART.md](QUICKSTART.md) for 5-minute setup
+- See [GITHUB_SETUP.md](GITHUB_SETUP.md) for detailed documentation
+
+**What you need:**
+1. AWS Access Key ID and Secret Access Key
+2. Configure GitHub Secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
+3. Create AWS Key Pair (`keypair-techchallenge1-fiap`)
+4. Create S3 bucket for Terraform state (optional but recommended)
+
+**How it works:**
+- **Pull Requests**: Runs `terraform plan` and comments the plan on PR
+- **Merge to Main**: Automatically runs `terraform apply` to deploy infrastructure
+
+This is the **recommended approach** for team collaboration and production deployments.
+
+## 💻 Manual Deployment (Alternative)
 
 ### Initialize Terraform
 

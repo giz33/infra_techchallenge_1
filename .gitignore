@@ -21,3 +21,6 @@ override.tf.json
 *.swp
 *.swo
 *~
+
+# Documentation (local only)
+GITHUB_SETUP.md

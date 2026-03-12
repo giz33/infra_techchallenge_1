@@ -8,7 +8,7 @@ This Terraform configuration creates AWS infrastructure for Tech Challenge 1 FIA
 - **Subnets**: 
   - 1 Public subnet (10.0.1.0/24) for EC2
   - 2 Private subnets (10.0.2.0/24, 10.0.3.0/24) for RDS
-- **EC2**: t3.micro instance with Python and pip pre-installed
+- **EC2**: t3.micro instance with Python, pip, Docker, and Docker Compose pre-installed
 - **RDS**: MariaDB instance (db.t3.micro, free tier eligible)
 - **Security**: 
   - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)

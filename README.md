@@ -11,8 +11,8 @@ This Terraform configuration creates AWS infrastructure for Tech Challenge 1 FIA
 - **EC2**: t3.micro instance with Python and pip pre-installed
 - **RDS**: MariaDB instance (db.t3.micro, free tier eligible)
 - **Security**: 
-  - EC2 accessible via SSH (port 22) and application port (5000)
-  - RDS accessible only from EC2 on port 3306
+  - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)
+  - RDS accessible only from EC2 security group on port 3306
 
 ## Prerequisites
 
@@ -107,14 +107,29 @@ You can customize variables in `variables.tf` or create a `terraform.tfvars` fil
 aws_region         = "us-east-1"
 project_name       = "techchallenge1-fiap"
 ec2_instance_type  = "t3.micro"
+allowed_ssh_ip     = "203.0.113.0/32"  # Replace with your IP address
+```
+
+### Get Your Current IP
+
+To restrict SSH to your current IP:
+
+```bash
+# Get your public IP
+curl -s https://checkip.amazonaws.com
+
+# Create terraform.tfvars with your IP
+echo 'allowed_ssh_ip = "YOUR_IP/32"' > terraform.tfvars
 ```
 
 ## Security Notes
 
 ⚠️ **Important**: 
-- The RDS password is stored in plain text in `variables.tf`. For production, use AWS Secrets Manager or Terraform variables.
-- SSH access (port 22) is open to 0.0.0.0/0. Consider restricting to your IP for better security.
-- Port 5000 is open to 0.0.0.0/0 as requested. Consider using a load balancer with SSL for production.
+- The RDS password is stored in plain text in `variables.tf`. For production, use AWS Secrets Manager or environment variables.
+- **SSH access**: By default set to 0.0.0.0/0. Strongly recommended to change `allowed_ssh_ip` variable to your specific IP address.
+- **HTTP/HTTPS ports** (80, 443) are open to 0.0.0.0/0 for web access.
+- **Port 5000** is open to 0.0.0.0/0 for application access.
+- **RDS** is in private subnet and only accessible from EC2 security group (best practice).
 
 ## Costs
 

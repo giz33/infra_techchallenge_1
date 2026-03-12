@@ -15,7 +15,7 @@ ln -s /usr/bin/pip3 /usr/bin/pip 2>/dev/null || true
 
 # Install common Python packages
 pip3 install --upgrade pip
-pip3 install flask mysql-connector-python pymysql
+pip3 install flask psycopg2-binary sqlalchemy
 
 echo "Python and pip installation completed!"
 

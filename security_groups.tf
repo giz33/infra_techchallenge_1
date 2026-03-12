@@ -58,14 +58,14 @@ resource "aws_security_group" "ec2" {
 # Security Group for RDS
 resource "aws_security_group" "rds" {
   name        = "${var.project_name}-rds-sg"
-  description = "Security group for RDS MariaDB instance"
+  description = "Security group for RDS PostgreSQL instance"
   vpc_id      = aws_vpc.main.id
 
-  # MariaDB/MySQL port access from EC2
+  # PostgreSQL port access from EC2
   ingress {
-    description     = "MariaDB access from EC2"
-    from_port       = 3306
-    to_port         = 3306
+    description     = "PostgreSQL access from EC2"
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.ec2.id]
   }

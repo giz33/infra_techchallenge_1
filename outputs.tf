@@ -15,22 +15,22 @@ output "ec2_instance_id" {
 
 output "rds_endpoint" {
   description = "RDS instance endpoint"
-  value       = aws_db_instance.mariadb.endpoint
+  value       = aws_db_instance.postgres.endpoint
 }
 
 output "rds_address" {
   description = "RDS instance address"
-  value       = aws_db_instance.mariadb.address
+  value       = aws_db_instance.postgres.address
 }
 
 output "rds_port" {
   description = "RDS instance port"
-  value       = aws_db_instance.mariadb.port
+  value       = aws_db_instance.postgres.port
 }
 
 output "rds_database_name" {
   description = "RDS database name"
-  value       = aws_db_instance.mariadb.db_name
+  value       = aws_db_instance.postgres.db_name
 }
 
 output "ssh_connection_command" {

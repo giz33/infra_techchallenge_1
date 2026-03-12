@@ -9,10 +9,10 @@ This Terraform configuration creates AWS infrastructure for Tech Challenge 1 FIA
   - 1 Public subnet (10.0.1.0/24) for EC2
   - 2 Private subnets (10.0.2.0/24, 10.0.3.0/24) for RDS
 - **EC2**: t3.micro instance with Python, pip, Docker, and Docker Compose pre-installed
-- **RDS**: MariaDB instance (db.t3.micro, free tier eligible)
+- **RDS**: PostgreSQL 13 instance (db.t3.micro, free tier eligible)
 - **Security**: 
   - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)
-  - RDS accessible only from EC2 security group on port 3306
+  - RDS accessible only from EC2 security group on port 5432
 
 ## Prerequisites
 
@@ -72,21 +72,45 @@ ssh -i ~/.ssh/keypair-techchallenge1-fiap.pem ec2-user@<EC2_PUBLIC_IP>
 Once connected to EC2:
 
 ```bash
-mysql -h <RDS_ENDPOINT> -u admin -p
+psql -h <RDS_ENDPOINT> -U admin -d togglemaster
 # Password: fiaptech34233@
 ```
 
 Or using Python:
 
 ```python
-import pymysql
+import psycopg2
 
-connection = pymysql.connect(
+connection = psycopg2.connect(
     host='<RDS_ENDPOINT>',
     user='admin',
     password='fiaptech34233@',
-    database='techchallenge'
+    database='togglemaster',
+    port=5432
 )
+```
+
+### Using Docker Compose with RDS
+
+If you want to use the RDS PostgreSQL instance with your Docker Compose application:
+
+1. Update your `docker-compose.yaml` environment variables:
+
+```yaml
+environment:
+  - DB_HOST=<RDS_ENDPOINT>  # Replace with actual RDS endpoint
+  - DB_NAME=togglemaster
+  - DB_USER=admin
+  - DB_PASSWORD=fiaptech34233@
+  - DB_PORT=5432
+```
+
+2. Comment out or remove the local `db` service from docker-compose.yaml since you're using RDS
+
+3. Deploy your application:
+
+```bash
+docker-compose up -d
 ```
 
 ## Destroy Infrastructure
@@ -135,7 +159,7 @@ echo 'allowed_ssh_ip = "YOUR_IP/32"' > terraform.tfvars
 
 This infrastructure uses:
 - 1x t3.micro EC2 instance (free tier eligible)
-- 1x db.t3.micro RDS MariaDB (free tier eligible for first 750 hours/month)
+- 1x db.t3.micro RDS PostgreSQL (free tier eligible for first 750 hours/month)
 - Standard networking and storage costs apply
 
 Always monitor your AWS costs and destroy resources when not needed.

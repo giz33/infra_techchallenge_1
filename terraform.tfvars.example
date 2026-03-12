@@ -18,7 +18,7 @@ allowed_ssh_ip = "0.0.0.0/0"  # CHANGE THIS!
 # RDS Database Configuration
 db_username = "admin"
 db_password = "fiaptech34233@"
-db_name     = "techchallenge"
+db_name     = "togglemaster"
 
 # VPC CIDR
 vpc_cidr = "10.0.0.0/16"

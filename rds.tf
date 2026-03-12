@@ -9,11 +9,11 @@ resource "aws_db_subnet_group" "main" {
   }
 }
 
-# RDS MariaDB Instance
-resource "aws_db_instance" "mariadb" {
-  identifier             = "${var.project_name}-mariadb"
-  engine                 = "mariadb"
-  engine_version         = "10.11"
+# RDS PostgreSQL Instance
+resource "aws_db_instance" "postgres" {
+  identifier             = "${var.project_name}-postgres"
+  engine                 = "postgres"
+  engine_version         = "13.13"
   instance_class         = "db.t3.micro"
   allocated_storage      = 20
   storage_type           = "gp2"
@@ -32,10 +32,10 @@ resource "aws_db_instance" "mariadb" {
   backup_window          = "03:00-04:00"
   maintenance_window     = "sun:04:00-sun:05:00"
   
-  enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
   tags = {
-    Name    = "${var.project_name}-mariadb"
+    Name    = "${var.project_name}-postgres"
     Project = var.project_name
   }
 }

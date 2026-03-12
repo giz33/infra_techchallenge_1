@@ -44,7 +44,7 @@ variable "db_password" {
 variable "db_name" {
   description = "RDS database name"
   type        = string
-  default     = "techchallenge"
+  default     = "togglemaster"
 }
 
 variable "allowed_ssh_ip" {

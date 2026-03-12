@@ -10,12 +10,12 @@
 # 4. Uncomment the code below
 # 5. Run: terraform init -migrate-state
 
-# terraform {
-#   backend "s3" {
-#     bucket         = "techchallenge1-terraform-state"
-#     key            = "terraform.tfstate"
-#     region         = "us-east-1"
-#     encrypt        = true
-#     dynamodb_table = "terraform-state-lock"
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket         = "techchallenge1-terraform-state"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
+}

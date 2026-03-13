@@ -2,7 +2,7 @@
 resource "aws_security_group" "ec2" {
   name        = "${var.project_name}-ec2-sg"
   description = "Security group for EC2 instance"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   # SSH access (restricted to specific IP)
   ingress {
@@ -59,7 +59,7 @@ resource "aws_security_group" "ec2" {
 resource "aws_security_group" "rds" {
   name        = "${var.project_name}-rds-sg"
   description = "Security group for RDS PostgreSQL instance"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   # PostgreSQL port access from EC2
   ingress {

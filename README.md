@@ -12,6 +12,50 @@
   - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)
   - RDS accessible only from EC2 security group on port 5432
 
+## Project Structure
+
+This project uses a **modular Terraform structure** for better organization, reusability, and maintainability:
+
+```
+.
+├── main.tf                    # Root module that orchestrates all child modules
+├── variables.tf               # Root-level variables
+├── outputs.tf                 # Root-level outputs
+├── provider.tf                # AWS provider configuration
+├── backend.tf                 # S3 backend for state management
+├── terraform.tfvars.example   # Example variables file
+├── .github/
+│   └── workflows/
+│       └── terraform.yml      # GitHub Actions CI/CD pipeline
+└── modules/                   # Reusable Terraform modules
+    ├── vpc/                   # VPC, subnets, IGW, route tables
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── security_groups/       # Security groups for EC2 and RDS
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── ec2/                   # EC2 instance configuration
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   ├── outputs.tf
+    │   └── user_data.sh       # Bootstrap script
+    └── rds/                   # RDS PostgreSQL configuration
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf
+```
+
+**Benefits of this structure:**
+- ✅ **Reusability**: Modules can be reused for different environments (dev, staging, prod)
+- ✅ **Maintainability**: Changes are isolated to specific modules
+- ✅ **Scalability**: Easy to add new environments or components
+- ✅ **Testability**: Each module can be tested independently
+- ✅ **Organization**: Clear separation of concerns
+
+See [modules/README.md](modules/README.md) for detailed module documentation.
+
 ## Prerequisites
 
 1. **AWS CLI** configured with credentials

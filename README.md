@@ -1,7 +1,5 @@
 # Tech Challenge 1 - Infrastructure as Code
 
-This Terraform configuration creates AWS infrastructure for Tech Challenge 1 FIAP.
-
 ## Architecture
 
 - **VPC**: Custom VPC with CIDR 10.0.0.0/16

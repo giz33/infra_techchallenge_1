@@ -1,68 +1,68 @@
-# Tech Challenge 1 - Infrastructure as Code
+# Tech Challenge 1 - Infraestrutura como Código
 
-## Architecture
+## Arquitetura
 
-- **VPC**: Custom VPC with CIDR 10.0.0.0/16
+- **VPC**: VPC personalizada com CIDR 10.0.0.0/16
 - **Subnets**: 
-  - 1 Public subnet (10.0.1.0/24) for EC2
-  - 2 Private subnets (10.0.2.0/24, 10.0.3.0/24) for RDS
-- **EC2**: t3.micro instance with Python, pip, Docker, and Docker Compose pre-installed
-- **RDS**: PostgreSQL 16 instance (db.t4g.micro, free tier eligible)
-- **Security**: 
-  - EC2 accessible via SSH (port 22 from specific IP), HTTP (80), HTTPS (443), and application port (5000)
-  - RDS accessible only from EC2 security group on port 5432
+  - 1 subnet pública (10.0.1.0/24) para EC2
+  - 2 subnets privadas (10.0.2.0/24, 10.0.3.0/24) para RDS
+- **EC2**: Instância t3.micro com Python, pip, Docker e Docker Compose pré-instalados
+- **RDS**: Instância PostgreSQL 16 (db.t4g.micro, elegível para free tier)
+- **Segurança**: 
+  - EC2 acessível via SSH (porta 22 de IP específico), HTTP (80), HTTPS (443) e porta de aplicação (5000)
+  - RDS acessível apenas do security group EC2 na porta 5432
 
-## Project Structure
+## Estrutura do Projeto
 
-This project uses a **modular Terraform structure** for better organization, reusability, and maintainability:
+Este projeto usa uma **estrutura modular do Terraform** para melhor organização, reutilização e manutenibilidade:
 
 ```
 .
-├── main.tf                    # Root module that orchestrates all child modules
-├── variables.tf               # Root-level variables
-├── outputs.tf                 # Root-level outputs
-├── provider.tf                # AWS provider configuration
-├── backend.tf                 # S3 backend for state management
-├── terraform.tfvars.example   # Example variables file
+├── main.tf                    # Módulo raiz que orquestra todos os módulos filhos
+├── variables.tf               # Variáveis de nível raiz
+├── outputs.tf                 # Saídas de nível raiz
+├── provider.tf                # Configuração do provedor AWS
+├── backend.tf                 # Backend S3 para gerenciamento de estado
+├── terraform.tfvars.example   # Arquivo de variáveis de exemplo
 ├── .github/
 │   └── workflows/
-│       └── terraform.yml      # GitHub Actions CI/CD pipeline
-└── modules/                   # Reusable Terraform modules
-    ├── vpc/                   # VPC, subnets, IGW, route tables
+│       └── terraform.yml      # Pipeline CI/CD do GitHub Actions
+└── modules/                   # Módulos Terraform reutilizáveis
+    ├── vpc/                   # VPC, subnets, IGW, tabelas de rota
     │   ├── main.tf
     │   ├── variables.tf
     │   └── outputs.tf
-    ├── security_groups/       # Security groups for EC2 and RDS
+    ├── security_groups/       # Grupos de segurança para EC2 e RDS
     │   ├── main.tf
     │   ├── variables.tf
     │   └── outputs.tf
-    ├── ec2/                   # EC2 instance configuration
+    ├── ec2/                   # Configuração da instância EC2
     │   ├── main.tf
     │   ├── variables.tf
     │   ├── outputs.tf
-    │   └── user_data.sh       # Bootstrap script
-    └── rds/                   # RDS PostgreSQL configuration
+    │   └── user_data.sh       # Script de inicialização
+    └── rds/                   # Configuração do RDS PostgreSQL
         ├── main.tf
         ├── variables.tf
         └── outputs.tf
 ```
 
-**Benefits of this structure:**
-- ✅ **Reusability**: Modules can be reused for different environments (dev, staging, prod)
-- ✅ **Maintainability**: Changes are isolated to specific modules
-- ✅ **Scalability**: Easy to add new environments or components
-- ✅ **Testability**: Each module can be tested independently
-- ✅ **Organization**: Clear separation of concerns
+**Benefícios desta estrutura:**
+- ✅ **Reutilização**: Módulos podem ser reutilizados para diferentes ambientes (dev, staging, prod)
+- ✅ **Manutenibilidade**: Alterações são isoladas em módulos específicos
+- ✅ **Escalabilidade**: Fácil adicionar novos ambientes ou componentes
+- ✅ **Testabilidade**: Cada módulo pode ser testado independentemente
+- ✅ **Organização**: Clara separação de responsabilidades
 
-See [modules/README.md](modules/README.md) for detailed module documentation.
+Consulte [modules/README.md](modules/README.md) para documentação detalhada dos módulos.
 
-## Prerequisites
+## Pré-requisitos
 
-1. **AWS CLI** configured with credentials
-2. **Terraform** installed (>= 1.0)
-3. **SSH Key Pair** named `keypair-techchallenge1-fiap` must exist in AWS (create it in the AWS console or via AWS CLI)
+1. **AWS CLI** configurada com credenciais
+2. **Terraform** instalado (>= 1.0)
+3. **SSH Key Pair** nomeado `keypair-techchallenge1-fiap` deve existir na AWS (crie no console AWS ou via AWS CLI)
 
-### Create Key Pair (if not exists)
+### Criar Key Pair (se não existir)
 
 ```bash
 aws ec2 create-key-pair \
@@ -73,72 +73,72 @@ aws ec2 create-key-pair \
 chmod 400 ~/.ssh/keypair-techchallenge1-fiap.pem
 ```
 
-## 🚀 CI/CD with GitHub Actions (Recommended)
+## 🚀 CI/CD com GitHub Actions (Recomendado)
 
-This repository includes a complete GitHub Actions workflow for automated Terraform deployments.
+Este repositório inclui um workflow completo do GitHub Actions para implantações automáticas do Terraform.
 
-**Quick Setup:**
-- See [QUICKSTART.md](QUICKSTART.md) for 5-minute setup
-- See [GITHUB_SETUP.md](GITHUB_SETUP.md) for detailed documentation
+**Configuração Rápida:**
+- Consulte [QUICKSTART.md](QUICKSTART.md) para configuração em 5 minutos
+- Consulte [GITHUB_SETUP.md](GITHUB_SETUP.md) para documentação detalhada
 
-**What you need:**
-1. AWS Access Key ID and Secret Access Key
-2. Configure GitHub Secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
-3. Create AWS Key Pair (`keypair-techchallenge1-fiap`)
-4. Create S3 bucket for Terraform state (optional but recommended)
+**O que você precisa:**
+1. AWS Access Key ID e Secret Access Key
+2. Configurar GitHub Secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
+3. Criar AWS Key Pair (`keypair-techchallenge1-fiap`)
+4. Criar bucket S3 para estado do Terraform (opcional mas recomendado)
 
-**How it works:**
-- **Pull Requests**: Runs `terraform plan` and comments the plan on PR
-- **Merge to Main**: Automatically runs `terraform apply` to deploy infrastructure
+**Como funciona:**
+- **Pull Requests**: Executa `terraform plan` e comenta o plano no PR
+- **Merge para Main**: Executa automaticamente `terraform apply` para implantar infraestrutura
 
-This is the **recommended approach** for team collaboration and production deployments.
+Esta é a **abordagem recomendada** para colaboração em equipe e implantações em produção.
 
-## 💻 Manual Deployment (Alternative)
+## 💻 Implantação Manual (Alternativa)
 
-### Initialize Terraform
+### Inicializar Terraform
 
 ```bash
 terraform init
 ```
 
-### Plan Infrastructure
+### Planejar Infraestrutura
 
 ```bash
 terraform plan
 ```
 
-### Apply Infrastructure
+### Aplicar Infraestrutura
 
 ```bash
 terraform apply
 ```
 
-Type `yes` when prompted to confirm.
+Digite `yes` quando solicitado para confirmar.
 
-### Outputs
+### Saídas
 
-After successful deployment, you'll see:
-- EC2 public IP and DNS
-- RDS endpoint
-- SSH connection command
-- Application URL
+Após implantação bem-sucedida, você verá:
+- IP público e DNS do EC2
+- Endpoint do RDS
+- Comando de conexão SSH
+- URL da aplicação
 
-### Connect to EC2
+### Conectar ao EC2
 
 ```bash
 ssh -i ~/.ssh/keypair-techchallenge1-fiap.pem ec2-user@<EC2_PUBLIC_IP>
 ```
 
-### Connect to RDS from EC2
+### Conectar ao RDS a partir do EC2
 
-Once connected to EC2:
+Uma vez conectado ao EC2:
 
 ```bash
 psql -h <RDS_ENDPOINT> -U dbadmin -d togglemaster
-# Password: fiaptech34233!
+# Senha: fiaptech34233!
 ```
 
-Or using Python:
+Ou usando Python:
 
 ```python
 import psycopg2
@@ -152,76 +152,76 @@ connection = psycopg2.connect(
 )
 ```
 
-### Using Docker Compose with RDS
+### Usar Docker Compose com RDS
 
-If you want to use the RDS PostgreSQL instance with your Docker Compose application:
+Se você quiser usar a instância PostgreSQL do RDS com sua aplicação Docker Compose:
 
-1. Update your `docker-compose.yaml` environment variables:
+1. Atualize suas variáveis de ambiente em `docker-compose.yaml`:
 
 ```yaml
 environment:
-  - DB_HOST=<RDS_ENDPOINT>  # Replace with actual RDS endpoint
+  - DB_HOST=<RDS_ENDPOINT>  # Substitua pelo endpoint RDS real
   - DB_NAME=togglemaster
   - DB_USER=dbadmin
   - DB_PASSWORD=fiaptech34233!
   - DB_PORT=5432
 ```
 
-2. Comment out or remove the local `db` service from docker-compose.yaml since you're using RDS
+2. Comente ou remova o serviço `db` local do docker-compose.yaml já que você está usando RDS
 
-3. Deploy your application:
+3. Implante sua aplicação:
 
 ```bash
 docker-compose up -d
 ```
 
-## Destroy Infrastructure
+## Destruir Infraestrutura
 
-When you're done, clean up resources:
+Quando terminar, limpe os recursos:
 
 ```bash
 terraform destroy
 ```
 
-Type `yes` when prompted to confirm.
+Digite `yes` quando solicitado para confirmar.
 
-## Configuration
+## Configuração
 
-You can customize variables in `variables.tf` or create a `terraform.tfvars` file:
+Você pode personalizar variáveis em `variables.tf` ou criar um arquivo `terraform.tfvars`:
 
 ```hcl
 aws_region         = "us-east-1"
 project_name       = "techchallenge1-fiap"
 ec2_instance_type  = "t3.micro"
-allowed_ssh_ip     = "203.0.113.0/32"  # Replace with your IP address
+allowed_ssh_ip     = "203.0.113.0/32"  # Substitua pelo seu endereço IP
 ```
 
-### Get Your Current IP
+### Obter seu IP Atual
 
-To restrict SSH to your current IP:
+Para restringir SSH ao seu IP atual:
 
 ```bash
-# Get your public IP
+# Obter seu IP público
 curl -s https://checkip.amazonaws.com
 
-# Create terraform.tfvars with your IP
+# Criar terraform.tfvars com seu IP
 echo 'allowed_ssh_ip = "YOUR_IP/32"' > terraform.tfvars
 ```
 
-## Security Notes
+## Notas de Segurança
 
-⚠️ **Important**: 
-- The RDS password is stored in plain text in `variables.tf`. For production, use AWS Secrets Manager or environment variables.
-- **SSH access**: By default set to 0.0.0.0/0. Strongly recommended to change `allowed_ssh_ip` variable to your specific IP address.
-- **HTTP/HTTPS ports** (80, 443) are open to 0.0.0.0/0 for web access.
-- **Port 5000** is open to 0.0.0.0/0 for application access.
-- **RDS** is in private subnet and only accessible from EC2 security group (best practice).
+⚠️ **Importante**: 
+- A senha do RDS é armazenada em texto simples em `variables.tf`. Para produção, use AWS Secrets Manager ou variáveis de ambiente.
+- **Acesso SSH**: Por padrão definido como 0.0.0.0/0. Altamente recomendado alterar a variável `allowed_ssh_ip` para o seu endereço IP específico.
+- **Portas HTTP/HTTPS** (80, 443) estão abertas para 0.0.0.0/0 para acesso web.
+- **Porta 5000** está aberta para 0.0.0.0/0 para acesso da aplicação.
+- **RDS** está em subnet privada e acessível apenas do security group EC2 (melhor prática).
 
-## Costs
+## Custos
 
-This infrastructure uses:
-- 1x t3.micro EC2 instance (free tier eligible)
-- 1x db.t4g.micro RDS PostgreSQL (free tier eligible for first 750 hours/month)
-- Standard networking and storage costs apply
+Esta infraestrutura usa:
+- 1x instância EC2 t3.micro (elegível para free tier)
+- 1x RDS PostgreSQL db.t4g.micro (elegível para free tier pelos primeiros 750 horas/mês)
+- Custos padrão de rede e armazenamento se aplicam
 
-Always monitor your AWS costs and destroy resources when not needed.
+Sempre monitore seus custos da AWS e destrua recursos quando não forem necessários.

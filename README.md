@@ -93,7 +93,7 @@ Once connected to EC2:
 
 ```bash
 psql -h <RDS_ENDPOINT> -U dbadmin -d togglemaster
-# Password: fiaptech34233@
+# Password: fiaptech34233!
 ```
 
 Or using Python:
@@ -104,7 +104,7 @@ import psycopg2
 connection = psycopg2.connect(
     host='<RDS_ENDPOINT>',
     user='dbadmin',
-    password='fiaptech34233@',
+    password='fiaptech34233!',
     database='togglemaster',
     port=5432
 )
@@ -121,7 +121,7 @@ environment:
   - DB_HOST=<RDS_ENDPOINT>  # Replace with actual RDS endpoint
   - DB_NAME=togglemaster
   - DB_USER=dbadmin
-  - DB_PASSWORD=fiaptech34233@
+  - DB_PASSWORD=fiaptech34233!
   - DB_PORT=5432
 ```
 

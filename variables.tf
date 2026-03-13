@@ -37,7 +37,7 @@ variable "db_username" {
 variable "db_password" {
   description = "RDS database password"
   type        = string
-  default     = "fiaptech34233@"
+  default     = "fiaptech34233!"
   sensitive   = true
 }
 

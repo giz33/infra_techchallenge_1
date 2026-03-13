@@ -4,9 +4,21 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.terraform.lock.hcl'
+      - 'user_data.sh'
+      - '.github/workflows/terraform.yml'
   pull_request:
     branches:
       - main
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.terraform.lock.hcl'
+      - 'user_data.sh'
+      - '.github/workflows/terraform.yml'
 
 permissions:
   contents: read

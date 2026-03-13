@@ -108,14 +108,3 @@ Para documentação detalhada, veja: [GITHUB_SETUP.md](GITHUB_SETUP.md)
 | `AWS_ACCESS_KEY_ID` | Access Key da AWS |
 | `AWS_SECRET_ACCESS_KEY` | Secret Key da AWS |
 | `AWS_REGION` | Região AWS (ex: us-east-1) |
-
-## 📝 Checklist
-
-- [ ] Secrets configurados no GitHub
-- [ ] Key pair criada na AWS
-- [ ] S3 bucket criado (opcional)
-- [ ] DynamoDB table criada (opcional)
-- [ ] Pipeline testado com PR
-- [ ] Deploy feito via merge para main
-
-Pronto! Sua infraestrutura está automatizada! 🎉

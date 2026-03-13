@@ -31,7 +31,7 @@ variable "key_pair_name" {
 variable "db_username" {
   description = "RDS database username"
   type        = string
-  default     = "admin"
+  default     = "dbadmin"
 }
 
 variable "db_password" {

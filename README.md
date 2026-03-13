@@ -92,7 +92,7 @@ ssh -i ~/.ssh/keypair-techchallenge1-fiap.pem ec2-user@<EC2_PUBLIC_IP>
 Once connected to EC2:
 
 ```bash
-psql -h <RDS_ENDPOINT> -U admin -d togglemaster
+psql -h <RDS_ENDPOINT> -U dbadmin -d togglemaster
 # Password: fiaptech34233@
 ```
 
@@ -103,7 +103,7 @@ import psycopg2
 
 connection = psycopg2.connect(
     host='<RDS_ENDPOINT>',
-    user='admin',
+    user='dbadmin',
     password='fiaptech34233@',
     database='togglemaster',
     port=5432
@@ -120,7 +120,7 @@ If you want to use the RDS PostgreSQL instance with your Docker Compose applicat
 environment:
   - DB_HOST=<RDS_ENDPOINT>  # Replace with actual RDS endpoint
   - DB_NAME=togglemaster
-  - DB_USER=admin
+  - DB_USER=dbadmin
   - DB_PASSWORD=fiaptech34233@
   - DB_PORT=5432
 ```

@@ -212,9 +212,9 @@ echo 'allowed_ssh_ip = "YOUR_IP/32"' > terraform.tfvars
 
 ⚠️ **Importante**: 
 - A senha do RDS é armazenada em texto simples em `variables.tf`. Para produção, use AWS Secrets Manager ou variáveis de ambiente.
-- **Acesso SSH**: Por padrão definido como 0.0.0.0/0. Altamente recomendado alterar a variável `allowed_ssh_ip` para o seu endereço IP específico.
+- **Acesso SSH**: Por padrão definido como 0.0.0.0/0. Alterar a variável `allowed_ssh_ip` para o IP específico conforme solicitad no tech challenge.
 - **Portas HTTP/HTTPS** (80, 443) estão abertas para 0.0.0.0/0 para acesso web.
-- **Porta 5000** está aberta para 0.0.0.0/0 para acesso da aplicação.
+- **Porta 5000** está aberta para 0.0.0.0/0 para acesso da aplicação.(Verificar se é necessário)
 - **RDS** está em subnet privada e acessível apenas do security group EC2 (melhor prática).
 
 ## Custos
@@ -223,5 +223,3 @@ Esta infraestrutura usa:
 - 1x instância EC2 t3.micro (elegível para free tier)
 - 1x RDS PostgreSQL db.t4g.micro (elegível para free tier pelos primeiros 750 horas/mês)
 - Custos padrão de rede e armazenamento se aplicam
-
-Sempre monitore seus custos da AWS e destrua recursos quando não forem necessários.
